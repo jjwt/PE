@@ -1,4 +1,4 @@
-from itertools import combinations as com
+#from itertools import combinations as com
 def makeprime(x):
 	p=[2]
 	P=[2]
@@ -14,6 +14,8 @@ def makeprime(x):
 		n+=2
 	return P
 
+########################################################################
+
 def isprime(n):
 	if n<=1:
 		return False
@@ -22,42 +24,51 @@ def isprime(n):
 		if t%i==0:
 			return False
 	return True
-a=makeprime(10000)
-print len(a)
-def isit(n):
-	t=com(list(n),2)
-	while 1:
-		try:
-			t1,t2=t.next()
-		except StopIteration:
-			break
-		tt1=int(str(t1)+str(t2))
-		tt2=int(str(t2)+str(t1))
-		if not isprime(tt1):
-			return False
-		if not isprime(tt2):
+
+########################################################################
+
+N=makeprime(100000)
+N.remove(2)
+N.remove(5)
+
+########################################################################
+
+def isit1(x,y):
+	t=int(str(x)+str(y))
+	if not isprime(t):
+		return False
+	t=int(str(y)+str(x))
+	if not isprime(t):
+		return False
+	return True
+
+########################################################################
+
+def isit(n,lis):
+	for i in lis:
+		if not isit1(n,i):
 			return False
 	return True
-def gen2():
-	ta=com(a,5)
-	while 1:
-		t=ta.next()
-		if isit(t):
-			print t,
-			print sum(t)
-			break
 
-def gen1():
-	nlen=len(a)
-	for i1 in range(nlen):
-		for i2 in range(i1+1,nlen):
-			for i3 in range(i2+1,nlen):
-				for i4 in range(i3+1,nlen):
-					for i5 in range(i4+1,nlen):
-						t=[a[i] for i in [i1,i2,i3,i4,i5]]
-						if isit(t):
-							print t,
-							print sum(t)
-							break
+########################################################################
 
-gen1()
+def main():
+	an=[[N[i]] for i in range(10)]
+	ans=an[:]
+	for i in range(10,len(N)):
+		for j in ans:
+			if isit(N[i],j):
+				#print j,
+				if len(j)==1:
+					ans.append([j[0],N[i]])
+				else:
+					j.append(N[i])
+				#print j
+				if len(j)==5:
+					print j,sum(j)
+					quit()
+				#print ans
+
+########################################################################
+
+main()
