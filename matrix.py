@@ -124,7 +124,8 @@ def matrix_determinant(A,precision=1e-6):
 	return an
 def matrix_gen_E(n):
 	#生成n阶单位阵
-	C=[range(n) for i in range(n)]
+	C=[[0.0]*n for i in range(n)]
+	#matrix_print(C)
 	for i in range(n):
 		C[i][i]=1
 	return C
@@ -135,6 +136,7 @@ def matrix_inverse(A,precision=1e-6):
 	B=deepcopy(A)
 	n=len(A)
 	C=matrix_gen_E(n)
+	#matrix_print(C)
 	for i in range(n-1):
 		if abs(C[i][i])<precision:
 			for j in range(i+1,n):
