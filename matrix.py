@@ -23,6 +23,7 @@ def ismatrix(lis):
 def matrix_check_ismatrix(*matrixs):
 	for matrix in matrixs:
 		if not ismatrix(matrix):
+			print matrix
 			raise TypeError, "the argument should be a matrix!"
 def matrix_add(A,B):
 	matrix_check_ismatrix(A,B)
@@ -32,7 +33,7 @@ def matrix_add(A,B):
 		raise TypeError, "the two matrix should be of the same struct!"
 	C=[range(n) for i in range(m)]
 	for i in range(m):
-		for j in range(m):
+		for j in range(n):
 			C[i][j]=A[i][j]+B[i][j]
 	return C
 def matrix_scalar_mult(n,A):
@@ -42,10 +43,10 @@ def matrix_scalar_mult(n,A):
 	if not isreal(n):
 		raise TypeError, "matrix_scalar_mult(n,A), the argument n should be an int or a float"
 	m=len(A)
-	n=len(A[0])
-	C=[range(n) for i in range(m)]
+	nn=len(A[0])
+	C=[range(nn) for i in range(m)]
 	for i in range(m):
-		for j in range(n):
+		for j in range(nn):
 			C[i][j]=n*A[i][j]
 	return C
 def matrix_subtraction(A,B):
@@ -132,7 +133,7 @@ def matrix_gen_E(n):
 def matrix_inverse(A,precision=1e-6):
 	#初等变换法计算矩阵的逆
 	if abs(matrix_determinant(A))<=precision:
-		raise InputError,"the determinant value of matrix should not be zero!"
+		raise TypeError,"the determinant value of matrix should not be zero!"
 	B=deepcopy(A)
 	n=len(A)
 	C=matrix_gen_E(n)
@@ -160,11 +161,42 @@ def matrix_inverse(A,precision=1e-6):
 		for j in range(n):
 			B[i][j]/=t
 			C[i][j]/=t
-	return B,C
+	return C
+def vector_module(A,B):
+	#求矢量A和B的差值的模
+	if not (type(A)==list and type(B)==list):
+		raise TypeError,"should be two list"
+	an=0
+	for i in range(len(A)):
+		an+=(A[i][0]-B[i][0])**2
+	return an**0.5
+def matrix_gradient(f,xp，precision=1e-6):
+	#差分法求点xp处的梯度
+	pass
+def matrix_newton(f,df,xp0,precision=1e-6):
+	#牛顿法
+	xp=deepcopy(xp0)
+	while 1:
+		xpt=matrix_subtraction(xp,matrix_mult(matrix_inverse(df(xp)),f(xp)))
+		#print xpt
+		if vector_module(xpt,xp)<precision:
+			break
+		xp=deepcopy(xpt)
+	for i in f(xpt):
+		if i[0]>precision:
+			print "no answer found after iter!"
+			return
+	matrix_print(xpt)
 def test():
-	a=[[1,2,3],
-			[2,2,1],
-			[3,4,3]]
-	for i in matrix_inverse(a):
-		matrix_print(i)
+	a=[[2.8,2.9]]
+	#print matrix_transpose(matrix_transpose(a))
+	def tf(xp):
+		x1,x2=matrix_transpose(xp)[0]
+		return [[x1**2+x2**2-9],
+			[x1+x2-3]]
+	def tdf(xp):
+		x1,x2=matrix_transpose(xp)[0]
+		return [[2.0*x1,2.0*x2],
+				[1.0,1.0]]
+	matrix_newton(tf,tdf,matrix_transpose(a))
 test()
